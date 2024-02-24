@@ -1,3 +1,3 @@
-dir = "C:\\Users\\Pablo\\Documents\\professional\\idesp-2023\\maria-felicia"
-data = dir + "\\data"
-out = dir + "\\projects\\segmentation\\out"
+dir = "C:\\Users\\Pablo\\Documents\\professional\\idesp-2023\\maria-felicia\\projects\\segmentation"
+data = "D:\\Pablo\\data\\idesp-lung-ctscans\\sample"
+out = dir + "\\out"

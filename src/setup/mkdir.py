@@ -2,9 +2,9 @@ from bigtree import *
 import pandas as pd
 import os
 
-from src.config import path
+from config import path
 
-tree_data = pd.read_csv(path.out + "\\read.csv")
+tree_data = pd.read_csv(path.out + "\\tree.csv")
 data = dataframe_to_tree(tree_data)
 offset = len(data.path_name)
 

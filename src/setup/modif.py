@@ -3,11 +3,7 @@ import pydicom
 import pandas as pd
 import os
 
-from src.config import path
-
-# fix issues with exporting .dot file to .png using graphviz
-os.environ["PATH"] += os.pathsep + 'C:\\Program Files\\Graphviz\\bin'
-
+from config import path
 
 def find_date(session_node):
     dcm_path = (session_node.children[0]).location + "\\" + os.listdir((session_node.children[0]).location)[0]
@@ -38,7 +34,7 @@ def split_by_date(tree):
     return tree
 
 
-og_tree_data = pd.read_csv(path.out + "\\read.csv")
+og_tree_data = pd.read_csv(path.out + "\\tree.csv")
 data = dataframe_to_tree(og_tree_data)
 
 new_data = split_by_date(data)
@@ -46,7 +42,4 @@ print_tree(new_data)
 
 tree_data = tree_to_dataframe(new_data, name_col="name", parent_col="parent", path_col="path",
                               attr_dict={"type": "type", "location": "location"})
-tree_data.to_csv(path.out + "\\read.csv", index=False)
-
-tree_visual = tree_to_dot(new_data)
-tree_visual.write_png(path.out + "\\visual.png")
+tree_data.to_csv(path.out + "\\tree.csv", index=False)

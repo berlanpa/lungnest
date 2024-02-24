@@ -2,8 +2,8 @@ from bigtree import *
 import os
 import pydicom
 
-from src.config import path
-from src.config import dict
+from config import path
+from config import dict
 
 tree = {"root": Node("data", path=path.data)}
 
@@ -46,4 +46,6 @@ def make_tree(data_path, level=1):
 
 make_tree(path.data)
 tree_data = tree_to_dataframe(tree["root"], name_col="name", parent_col="parent", path_col="path", attr_dict={"type": "type", "path": "location"})
-tree_data.to_csv(path.out + "\\read.csv", index=False)
+
+if not os.path.exists(path.out): os.mkdir(path.out)
+tree_data.to_csv(path.out + "\\tree.csv", index=False)
