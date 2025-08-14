@@ -33,6 +33,7 @@
   },
   "scripts": {
     "build": "webpack --config config/webpack.demo.js",
-    "dev": "webpack --config config/webpack.demo.js --watch"
+    "dev": "webpack --config config/webpack.demo.js --watch",
+    "start": "yarn build && cd build/demo && python3 -m http.server 8080"
   }
 }
