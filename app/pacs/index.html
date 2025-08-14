@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Lung Viewing for EF</title>
+<meta charset="UTF-8">
+<meta name="description" content="DICOM Web Viewer (DWV) simple version">
+<meta name="keywords" content="DICOM,HTML5,JavaScript,medical,imaging,DWV">
+<link rel="icon" href="favicon.ico"/>
+<!-- Google Fonts - Pixelify Sans -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Style -->
+<style type="text/css">
+body {
+  font-family: 'Pixelify Sans', Arial, Helvetica, sans-serif;
+  background-color: #0d0d0d;
+  color: #e0e0e0;
+}
+html, body {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  background-color: #0d0d0d;
+}
+.left-panel {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #0d0d0d;
+  box-sizing: border-box;
+  max-height: 100vh;
+  color: #e0e0e0;
+}
+.right-panel {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  background-color: #0d0d0d;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  height: 100vh;
+  position: relative;
+}
+table {
+  margin: 0 5px;
+  background-color: #0d0d0d;
+  color: #e0e0e0;
+  border-radius: 8px;
+}
+td, th {
+  border: 1px solid #444;
+  padding: 10px;
+  color: #e0e0e0;
+}
+th {
+  background: #262626;
+}
+thead {
+  position: sticky;
+  top: 0;
+}
+progress {
+  width: 40%;
+  background-color: #262626;
+  border: 1px solid #444;
+  border-radius: 12px;
+}
+progress::-webkit-progress-bar {
+  background-color: #262626;
+  border-radius: 12px;
+}
+progress::-webkit-progress-value {
+  background-color: #4a9eff;
+  border-radius: 12px;
+}
+progress::-moz-progress-bar {
+  background-color: #4a9eff;
+  border-radius: 12px;
+}
+label {
+  color: #e0e0e0;
+  font-family: 'Pixelify Sans', Arial, Helvetica, sans-serif;
+}
+input[type="checkbox"], input[type="radio"] {
+  accent-color: #4a9eff;
+  margin-right: 8px;
+}
+span {
+  font-size: small;
+  font-style: italic;
+  font-family: 'Pixelify Sans', Arial, Helvetica, sans-serif;
+}
+button {
+  margin: 2px;
+  background-color: #262626;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-family: 'Pixelify Sans', Arial, Helvetica, sans-serif;
+}
+button:hover {
+  background-color: #333333;
+  border-color: #555;
+}
+button:disabled {
+  background-color: #0d0d0d;
+  color: #666;
+  cursor: not-allowed;
+}
+input[type=number], input[type=text] {
+  width: 75px;
+  background-color: #262626;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-family: 'Pixelify Sans', Arial, Helvetica, sans-serif;
+}
+input[type=number]:focus, input[type=text]:focus {
+  border-color: #666;
+  outline: none;
+}
+input[type=color] {
+  margin: 0 5px;
+  width: 25px;
+  height: 25px;
+  background-color: #262626;
+  border: 1px solid #444;
+  border-radius: 12px;
+}
+select {
+  width: 90px;
+  background-color: #262626;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 4px;
+  font-family: 'Pixelify Sans', Arial, Helvetica, sans-serif;
+}
+select:focus {
+  border-color: #666;
+  outline: none;
+}
+fieldset {
+  border: 1px solid #444;
+  background-color: #0d0d0d;
+  border-radius: 12px;
+  padding: 10px;
+}
+fieldset legend {
+  font-size: small;
+  font-style: italic;
+  color: #ccc;
+  padding: 0 8px;
+  font-family: 'Pixelify Sans', Arial, Helvetica, sans-serif;
+}
+fieldset ul {
+  padding-left: 20px;
+  margin: 0;
+}
+#fileinput {
+  width: 50%;
+  border: 1px dotted #444;
+  background-color: #262626;
+  color: #e0e0e0;
+  padding: 8px;
+  border-radius: 12px;
+  font-family: 'Pixelify Sans', Arial, Helvetica, sans-serif;
+}
+#about {
+  font-size: small;
+  font-style: italic;
+  color: #ccc;
+  font-family: 'Pixelify Sans', Arial, Helvetica, sans-serif;
+}
+#layersdetails {
+  overflow: auto;
+  background-color: #0d0d0d;
+  border-radius: 12px;
+  color: #e0e0e0;
+}
+.line {
+  padding: 8px 5px;
+  margin-bottom: 10px;
+  background-color: #0d0d0d;
+  border-radius: 12px;
+}
+.toolFeatures {
+  margin: 0 5px;
+}
+.ctrl-range {
+  width: 100px;
+  margin: 0px 10px;
+}
+/* special dwv */
+#dwv {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 100%;
+  /* compensate for layer absolute position */
+  margin: 0;
+  padding: 0;
+  border: 1px solid #333;
+  outline: none;
+  overflow: visible;
+  position: relative;
+  background-color: #1a1a1a;
+}
+.layerGroup {
+  flex: 1 1;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  /* allow child centering */
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.layerGroup::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  z-index: 500;
+  pointer-events: none;
+  /* Box-shadow will be dynamically generated by JavaScript */
+  box-shadow:
+    234px 67px 0px 0px rgba(255,255,255,0.9),
+    456px 189px 0px 0px rgba(255,255,255,0.7),
+    123px 345px 0px 0px rgba(255,255,255,1),
+    678px 23px 0px 0px rgba(255,255,255,0.6),
+    89px 456px 0px 0px rgba(255,255,255,0.8),
+    567px 234px 0px 0px rgba(255,255,255,0.9),
+    345px 78px 0px 0px rgba(255,255,255,0.7),
+    789px 345px 0px 0px rgba(255,255,255,1),
+    12px 567px 0px 0px rgba(255,255,255,0.6),
+    456px 123px 0px 0px rgba(255,255,255,0.8),
+    234px 789px 0px 0px rgba(255,255,255,0.9),
+    678px 456px 0px 0px rgba(255,255,255,0.7),
+    901px 234px 0px 0px rgba(255,255,255,1),
+    345px 567px 0px 0px rgba(255,255,255,0.6),
+    567px 89px 0px 0px rgba(255,255,255,0.8),
+    123px 678px 0px 0px rgba(255,255,255,0.9),
+    789px 123px 0px 0px rgba(255,255,255,0.7),
+    456px 345px 0px 0px rgba(255,255,255,1),
+    234px 901px 0px 0px rgba(255,255,255,0.6),
+    678px 567px 0px 0px rgba(255,255,255,0.8),
+    89px 234px 0px 0px rgba(255,255,255,0.9),
+    567px 789px 0px 0px rgba(255,255,255,0.7),
+    345px 456px 0px 0px rgba(255,255,255,1),
+    789px 678px 0px 0px rgba(255,255,255,0.6),
+    12px 89px 0px 0px rgba(255,255,255,0.8),
+    456px 567px 0px 0px rgba(255,255,255,0.9),
+    234px 345px 0px 0px rgba(255,255,255,0.7),
+    678px 123px 0px 0px rgba(255,255,255,1),
+    901px 789px 0px 0px rgba(255,255,255,0.6),
+    345px 234px 0px 0px rgba(255,255,255,0.8),
+    567px 456px 0px 0px rgba(255,255,255,0.9),
+    123px 901px 0px 0px rgba(255,255,255,0.7),
+    789px 567px 0px 0px rgba(255,255,255,1),
+    456px 678px 0px 0px rgba(255,255,255,0.6),
+    234px 123px 0px 0px rgba(255,255,255,0.8),
+    678px 789px 0px 0px rgba(255,255,255,0.9),
+    89px 345px 0px 0px rgba(255,255,255,0.7),
+    567px 901px 0px 0px rgba(255,255,255,1),
+    345px 89px 0px 0px rgba(255,255,255,0.6),
+    789px 456px 0px 0px rgba(255,255,255,0.8),
+    12px 234px 0px 0px rgba(255,255,255,0.9),
+    456px 789px 0px 0px rgba(255,255,255,0.7),
+    234px 567px 0px 0px rgba(255,255,255,1),
+    678px 345px 0px 0px rgba(255,255,255,0.6),
+    901px 123px 0px 0px rgba(255,255,255,0.8),
+    345px 678px 0px 0px rgba(255,255,255,0.9),
+    567px 234px 0px 0px rgba(255,255,255,0.7),
+    123px 789px 0px 0px rgba(255,255,255,1),
+    789px 89px 0px 0px rgba(255,255,255,0.6),
+    456px 456px 0px 0px rgba(255,255,255,0.8),
+    234px 678px 0px 0px rgba(255,255,255,0.9),
+    512px 298px 0px 0px rgba(255,255,255,0.7),
+    167px 743px 0px 0px rgba(255,255,255,0.8),
+    834px 156px 0px 0px rgba(255,255,255,0.6),
+    298px 612px 0px 0px rgba(255,255,255,0.9),
+    743px 387px 0px 0px rgba(255,255,255,1),
+    156px 821px 0px 0px rgba(255,255,255,0.7),
+    612px 67px 0px 0px rgba(255,255,255,0.8),
+    387px 534px 0px 0px rgba(255,255,255,0.6),
+    821px 298px 0px 0px rgba(255,255,255,0.9),
+    67px 743px 0px 0px rgba(255,255,255,1),
+    534px 156px 0px 0px rgba(255,255,255,0.7),
+    298px 612px 0px 0px rgba(255,255,255,0.8),
+    743px 387px 0px 0px rgba(255,255,255,0.6),
+    156px 821px 0px 0px rgba(255,255,255,0.9),
+    612px 67px 0px 0px rgba(255,255,255,1),
+    387px 534px 0px 0px rgba(255,255,255,0.7),
+    821px 298px 0px 0px rgba(255,255,255,0.8),
+    67px 743px 0px 0px rgba(255,255,255,0.6),
+    534px 156px 0px 0px rgba(255,255,255,0.9),
+    298px 612px 0px 0px rgba(255,255,255,1),
+    743px 387px 0px 0px rgba(255,255,255,0.7),
+    156px 821px 0px 0px rgba(255,255,255,0.8),
+    612px 67px 0px 0px rgba(255,255,255,0.6),
+    387px 534px 0px 0px rgba(255,255,255,0.9),
+    821px 298px 0px 0px rgba(255,255,255,1),
+    67px 743px 0px 0px rgba(255,255,255,0.7),
+    534px 156px 0px 0px rgba(255,255,255,0.8),
+    298px 612px 0px 0px rgba(255,255,255,0.6),
+    743px 387px 0px 0px rgba(255,255,255,0.9),
+    156px 821px 0px 0px rgba(255,255,255,1),
+    612px 67px 0px 0px rgba(255,255,255,0.7),
+    387px 534px 0px 0px rgba(255,255,255,0.8),
+    821px 298px 0px 0px rgba(255,255,255,0.6),
+    67px 743px 0px 0px rgba(255,255,255,0.9),
+    534px 156px 0px 0px rgba(255,255,255,1),
+    298px 612px 0px 0px rgba(255,255,255,0.7),
+    743px 387px 0px 0px rgba(255,255,255,0.8),
+    156px 821px 0px 0px rgba(255,255,255,0.6),
+    612px 67px 0px 0px rgba(255,255,255,0.9),
+    387px 534px 0px 0px rgba(255,255,255,1),
+    821px 298px 0px 0px rgba(255,255,255,0.7),
+    67px 743px 0px 0px rgba(255,255,255,0.8),
+    534px 156px 0px 0px rgba(255,255,255,0.6),
+    298px 612px 0px 0px rgba(255,255,255,0.9),
+    743px 387px 0px 0px rgba(255,255,255,1),
+    156px 821px 0px 0px rgba(255,255,255,0.7),
+    612px 67px 0px 0px rgba(255,255,255,0.8),
+    387px 534px 0px 0px rgba(255,255,255,0.6),
+    821px 298px 0px 0px rgba(255,255,255,0.9),
+    67px 743px 0px 0px rgba(255,255,255,1),
+    534px 156px 0px 0px rgba(255,255,255,0.7),
+    298px 612px 0px 0px rgba(255,255,255,0.8),
+    743px 387px 0px 0px rgba(255,255,255,0.6),
+    156px 821px 0px 0px rgba(255,255,255,0.9),
+    612px 67px 0px 0px rgba(255,255,255,1),
+    387px 534px 0px 0px rgba(255,255,255,0.7),
+    821px 298px 0px 0px rgba(255,255,255,0.8),
+    67px 743px 0px 0px rgba(255,255,255,0.6),
+    534px 156px 0px 0px rgba(255,255,255,0.9),
+    298px 612px 0px 0px rgba(255,255,255,1),
+    743px 387px 0px 0px rgba(255,255,255,0.7),
+    156px 821px 0px 0px rgba(255,255,255,0.8),
+    612px 67px 0px 0px rgba(255,255,255,0.6),
+    387px 534px 0px 0px rgba(255,255,255,0.9),
+    821px 298px 0px 0px rgba(255,255,255,1),
+    67px 743px 0px 0px rgba(255,255,255,0.7),
+    534px 156px 0px 0px rgba(255,255,255,0.8),
+    298px 612px 0px 0px rgba(255,255,255,0.6),
+    743px 387px 0px 0px rgba(255,255,255,0.9),
+    156px 821px 0px 0px rgba(255,255,255,1),
+    612px 67px 0px 0px rgba(255,255,255,0.7),
+    387px 534px 0px 0px rgba(255,255,255,0.8),
+    821px 298px 0px 0px rgba(255,255,255,0.6),
+    67px 743px 0px 0px rgba(255,255,255,0.9),
+    534px 156px 0px 0px rgba(255,255,255,1),
+    298px 612px 0px 0px rgba(255,255,255,0.7),
+    743px 387px 0px 0px rgba(255,255,255,0.8),
+    156px 821px 0px 0px rgba(255,255,255,0.6),
+    612px 67px 0px 0px rgba(255,255,255,0.9),
+    387px 534px 0px 0px rgba(255,255,255,1),
+    821px 298px 0px 0px rgba(255,255,255,0.7),
+    67px 743px 0px 0px rgba(255,255,255,0.8),
+    534px 156px 0px 0px rgba(255,255,255,0.6),
+    298px 612px 0px 0px rgba(255,255,255,0.9),
+    743px 387px 0px 0px rgba(255,255,255,1),
+    156px 821px 0px 0px rgba(255,255,255,0.7),
+    612px 67px 0px 0px rgba(255,255,255,0.8),
+    387px 534px 0px 0px rgba(255,255,255,0.6),
+    821px 298px 0px 0px rgba(255,255,255,0.9),
+    67px 743px 0px 0px rgba(255,255,255,1),
+    534px 156px 0px 0px rgba(255,255,255,0.7),
+    298px 612px 0px 0px rgba(255,255,255,0.8),
+    743px 387px 0px 0px rgba(255,255,255,0.6),
+    156px 821px 0px 0px rgba(255,255,255,0.9),
+    612px 67px 0px 0px rgba(255,255,255,1),
+    387px 534px 0px 0px rgba(255,255,255,0.7),
+    821px 298px 0px 0px rgba(255,255,255,0.8),
+    67px 743px 0px 0px rgba(255,255,255,0.6),
+    534px 156px 0px 0px rgba(255,255,255,0.9);
+}
+.layer {
+  /* needed for overlay */
+  position: absolute;
+  /* center */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+}
+.vertical-slider {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 10px;
+  -webkit-appearance: none;
+  appearance: none;
+  z-index: 1002;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 60%;
+  margin: 0;
+}
+/* Ensure all DWV interactive elements are above stars */
+.layerGroup canvas,
+.layerGroup input,
+.layerGroup button {
+  z-index: 600;
+  position: relative;
+}
+/* All vertical sliders and range inputs in DWV should be absolutely positioned */
+#dwv input[type="range"],
+#dwv .vertical-slider,
+input.vertical-slider {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 10px;
+  -webkit-appearance: none;
+  appearance: none;
+  z-index: 700;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 60%;
+  margin: 0;
+}
+/** slider vertical settings*/
+input.vertical-slider[type=range]::-webkit-slider-runnable-track {
+  width: 10px;
+  cursor: pointer;
+  background: lightgray;
+  border: 0;
+}
+input.vertical-slider[type=range]::-webkit-slider-thumb {
+  width: 10px;
+  height: 15px;
+  background: #2F3C4A;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: 0px;
+  border: 0;
+}
+input.vertical-slider[type=range]:disabled::-webkit-slider-thumb {
+  background: lightgray;
+}
+input.vertical-slider[type=range]:focus::-webkit-slider-runnable-track {
+  background: lightgray;
+}
+input.vertical-slider[type=range]::-moz-range-track {
+  width: 10px;
+  cursor: pointer;
+  background: lightgray;
+  border: 0;
+}
+input.vertical-slider[type=range]::-moz-range-thumb {
+  width: 10px;
+  height: 15px;
+  background: #2F3C4A;
+  cursor: pointer;
+  border: 0;
+}
+input.vertical-slider[type=range]:disabled::-moz-range-thumb {
+  background: lightgray;
+}
+
+canvas {
+  /* avoid parent auto-resize */
+  vertical-align: middle;
+}
+/** tooltip */
+.layerGroup span {
+  display: none;
+  background-color: palegreen;
+  padding: 2px;
+}
+.layerGroup:hover span {
+  display: inline-block;
+  position: absolute;
+  overflow: hidden;
+}
+/** crossshair */
+.layerGroup hr {
+  pointer-events: none;
+  border: none;
+  position: absolute;
+  margin: 0;
+}
+hr.horizontal {
+  border-top: 2px dashed lime;
+}
+hr.vertical {
+  border-top: 2px dashed lime;
+  transform-origin: left;
+  transform: rotate(90deg);
+}
+#brushCursor {
+  pointer-events: none;
+  position: absolute;
+  z-index: 100;
+
+  width: 10px;
+  height: 10px;
+  border: 1px solid #fff;
+  border-radius: 50%;
+}
+</style>
+
+<!-- dwv build -->
+<script type="text/javascript" src="../../dist/dwv.min.js"></script>
+<script type="module" src="./viewer.js"></script>
+<!-- local -->
+
+</head>
+
+<body>
+
+<div class="container">
+  <!-- Left Panel - Controls -->
+  <div class="left-panel">
+    <div class="line">
+      <label for="fileinput">Input:</label>
+      <input type="file" id="fileinput" multiple>
+      <progress id="loadprogress" max="100" value="0"></progress>
+    </div>
+
+    <div id="position-line" class="line">
+      <label for="position">Position:</label>
+      <input type="text" id="position" autocomplete="off" >
+      <span id="positionspan"></span>
+    </div>
+
+    <div id="layout-line" class="line">
+      <label for="changelayout">Layout:</label>
+      <select name="layout" id="changelayout" autocomplete="off" disabled>
+      </select>
+      <button id="resetviews" disabled>Reset views</button>
+      <input type="checkbox" id="changesmoothing">
+      <label for="changesmoothing">Smoothing</label>
+    </div>
+
+    <div id="rotate-line" class="line">
+      <label for="rotate-x">Resample:</label>
+      <button id="rotate-x">X+</button>
+      <button id="rotate-y">Y+</button>
+      <button id="rotate-z">Z+</button>
+      <button id="rotate-match">Match</button>
+      <button id="rotate-reset">Reset</button>
+    </div>
+
+    <div id="binders-line" class="line">
+      <fieldset id="binders">
+        <legend>Binders</legend>
+      </fieldset>
+    </div>
+
+    <div id="tools-line" class="line">
+      <fieldset id="tools" disabled>
+        <legend>Tools</legend>
+      </fieldset>
+    </div>
+
+    <div id="layersdetails"></div>
+  </div>
+
+  <!-- Right Panel - Viewer -->
+  <div class="right-panel">
+    <div id="dwv">
+      <!-- DWV viewer will be initialized here by JavaScript -->
+    </div>
+  </div>
+</div>
+
+<script>
+// Generate evenly spaced dots pattern
+function generateDotPattern() {
+  const spacing = 50; // 50px spacing
+  const maxWidth = 1920; // Assume max viewport width
+  const maxHeight = 1080; // Assume max viewport height
+  
+  const dots = [];
+  
+  for (let y = spacing; y < maxHeight; y += spacing) {
+    for (let x = spacing; x < maxWidth; x += spacing) {
+      // Add some opacity variation for visual interest
+      const opacity = 0.4 + Math.random() * 0.4; // Random opacity between 0.4 and 0.8
+      dots.push(`${x}px ${y}px 0px 0px rgba(255,255,255,${opacity})`);
+    }
+  }
+  
+  return dots.join(',\n    ');
+}
+
+// Apply the dot pattern when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+  const style = document.createElement('style');
+  style.textContent = `
+    .layerGroup::before {
+      box-shadow: ${generateDotPattern()};
+    }
+  `;
+  document.head.appendChild(style);
+  
+  // Auto-load all DICOM files immediately
+  autoLoadAllDicomFiles();
+});
+
+// Auto-load all DICOM files from SE1 directory and subdirectories
+async function autoLoadAllDicomFiles() {
+  try {
+    const filePaths = [];
+    
+
+    console.log('Adding original SE1 DICOM files...');
+    for (let i = 0; i <= 533; i++) {
+      filePaths.push(`../data/se1/original/IM${i}`);
+    }
+    
+    console.log(`Starting to load ${filePaths.length} DICOM files from SE1 directory and subdirectories...`);
+    
+    const dt = new DataTransfer();
+    let loadedCount = 0;
+    let failedCount = 0;
+    
+    // Load all files in parallel
+    const loadPromises = filePaths.map(async (filePath, index) => {
+      try {
+        const response = await fetch(filePath);
+        if (!response.ok) {
+          failedCount++;
+          return null;
+        }
+        
+        const blob = await response.blob();
+        const fileName = filePath.split('/').pop(); // Get just the filename (IM0, IM1, etc.)
+        const file = new File([blob], fileName, { type: 'application/dicom' });
+        
+        dt.items.add(file);
+        loadedCount++;
+        
+        // Log progress every 100 files (since we have many more files now)
+        if (loadedCount % 100 === 0) {
+          console.log(`Loaded ${loadedCount} DICOM files...`);
+        }
+        
+        return file;
+      } catch (error) {
+        failedCount++;
+        console.warn(`Failed to load ${filePath}:`, error);
+        return null;
+      }
+    });
+    
+    // Wait for all files to load
+    await Promise.all(loadPromises);
+    
+    console.log(`Finished loading: ${loadedCount} files loaded, ${failedCount} files failed`);
+    
+    if (loadedCount > 0) {
+      // Get the file input element and set all files
+      const fileInput = document.getElementById('fileinput');
+      fileInput.files = dt.files;
+      
+      // Trigger the change event to simulate file selection
+      const changeEvent = new Event('change', { bubbles: true });
+      fileInput.dispatchEvent(changeEvent);
+      
+      console.log(`Auto-loaded ${loadedCount} DICOM files from SE1 directory and subdirectories (original, lobes, mask, lung)`);
+    } else {
+      console.warn('No DICOM files could be loaded from SE1 directory and subdirectories');
+    }
+    
+  } catch (error) {
+    console.error('Error auto-loading DICOM files from SE1 subdirectories:', error);
+  }
+}
+</script>
+
+</body>
+</html>
