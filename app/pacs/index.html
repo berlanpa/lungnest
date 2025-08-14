@@ -36,6 +36,54 @@ html, body {
   overflow: hidden;
   background-color: #0d0d0d;
 }
+
+/* Mobile and small screens - stack vertically */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  .left-panel {
+    flex: none;
+    height: auto;
+    max-height: 40vh;
+    overflow-y: auto;
+    border-bottom: 1px solid #444;
+    padding: 10px;
+  }
+  
+  .right-panel {
+    flex: 1;
+    height: 60vh;
+    min-height: 60vh;
+  }
+  
+  /* Make buttons more touch-friendly on mobile */
+  button {
+    padding: 10px 16px;
+    margin: 4px;
+    min-height: 44px;
+    font-size: 14px;
+  }
+  
+  /* Make input fields larger for touch */
+  input[type=number], input[type=text] {
+    padding: 8px 12px;
+    min-height: 40px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  /* Adjust table for mobile */
+  table {
+    font-size: 12px;
+  }
+  
+  td, th {
+    padding: 6px;
+  }
+}
 .left-panel {
   flex: 1;
   padding: 15px;
