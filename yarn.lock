@@ -1572,10 +1572,10 @@ kind-of@^6.0.2:
   resolved "https://registry.npmjs.org/kind-of/-/kind-of-6.0.3.tgz"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
-konva@~9.3.20:
-  version "9.3.22"
-  resolved "https://registry.npmjs.org/konva/-/konva-9.3.22.tgz"
-  integrity sha512-yQI5d1bmELlD/fowuyfOp9ff+oamg26WOCkyqUyc+nczD/lhRa3EvD2MZOoc4c1293TAubW9n34fSQLgSeEgSw==
+konva@~10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/konva/-/konva-10.0.0.tgz#f0a9238d959676ef355f57fce8280b16153fdde9"
+  integrity sha512-BlwOR6avOq6AQOOU6ZYWnAewxx0l1e3anD3ZCVcrf3EdETRzGdCd6d1WGx0CZBZNy/usqwqDmh7J5k1RWROQTg==
 
 lie@~3.3.0:
   version "3.3.0"
